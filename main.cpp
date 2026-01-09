@@ -27,6 +27,7 @@ int main() {
         }
 
        
+        // cppcheck-suppress knownConditionTrueFalse
         if(!p->isAlive()) {
             cout << "\nAI MURIT. DARK SOULS.\n";
             Person* pr = new Person(gameMap.getScore(), p->getName(), false);
@@ -34,6 +35,7 @@ int main() {
             leaderboard.showLeaderboard();
             break;
         }
+      
 
         if(Boss::getCount() == 0) {
             cout << "\nVICTORIE! TOTI BOSSII AU FOST INVINS!\n";
