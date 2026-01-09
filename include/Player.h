@@ -1,0 +1,27 @@
+#ifndef PROIECT_OOP_PLAYER_H
+#define PROIECT_OOP_PLAYER_H
+#include "Entity.h"
+#include "GameUtils.h"
+
+
+class Player :public Character{
+private:
+    Inventory<Item *> backpack;
+    Weapon* equippedWeapon;
+public:
+    
+    explicit Player(const std::string& name);
+    
+    ~Player() override;
+
+    void addItem(Item* it);
+    void useItem(int index,Character* target);
+    void attack(Character *target) override;
+    bool hasKey(const std::string& keyName);
+    void showInventory();
+    void restAtBonfire();
+
+    friend std::istream& operator>>(std::istream&, Player&);
+};
+
+#endif //PROIECT_OOP_PLAYER_H

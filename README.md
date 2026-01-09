@@ -1,100 +1,72 @@
-# Nu primesc notă pentru că nu am pus titlu și descriere
 
-### Folosiți template-ul corespunzător grupei voastre!
+# Dark Souls: Varianta in Text
 
-| Laborant  | Link template                                |
-|-----------|----------------------------------------------|
-| Dragoș B  | https://github.com/Ionnier/oop-template      |
-| Tiberiu M | https://github.com/MaximTiberiu/oop-template |
-| Marius MC | https://github.com/mcmarius/oop-template     |
+Un motor de joc de tip **Text-Based RPG** implementat în **C++**, inspirat din universul **Dark Souls**. Proiectul simulează mecanici de explorare, luptă pe ture, gestionare a inventarului și interacțiune cu NPC-uri, demonstrând utilizarea conceptelor fundamentale și avansate ale **Programării Orientate pe Obiecte (POO)**.
 
-## Instrucțiuni de compilare
+## Descriere Joc
 
-Proiectul este configurat cu CMake.
+Jucătorul preia rolul unui personaj care trebuie să exploreze o hartă interconectată, să învingă inamici și boși și să colecteze resurse pentru a supraviețui.
 
-Instrucțiuni pentru terminal:
+### Functionalitati Principale
 
-1. Pasul de configurare
-```sh
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
-# sau ./scripts/cmake.sh configure
-```
+* **Navigare:** Sistem de deplasare între camere bazat pe un graf (implementat prin liste de adiacență folosind vectori).
+* **Sistem de Lupta:** Luptă pe ture contra inamicilor și a Boșilor, utilizând arme și obiecte ofensive.
+* **Inventar:** Gestionarea obiectelor (arme, consumabile, chei) într-un container dinamic.
+* **Leaderboard:** Sistem de clasament care memorează eroii câștigători și pe cei învinși, folosind structuri de date diferite pentru optimizare.
+* **Mecanica Bonfire:** Puncte de control care refac viața jucătorului dar declanșează reînvierea (respawn-ul) inamicilor pe hartă.
+* **Interactiuni:** Dialoguri cu NPC-uri și colectarea de obiecte din cufere.
 
-Sau pe Windows cu GCC:
-```sh
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -G Ninja
-# sau ./scripts/cmake.sh configure -g Ninja
-```
+---
 
-La acest pas putem cere să generăm fișiere de proiect pentru diverse medii de lucru.
+## Implementare Tehnica (Cerinte POO)
 
-## Cerințe obligatorii
+Proiectul respectă cerințele laboratorului, implementând următoarele concepte:
 
-Nerespectarea duce la nepunctarea proiectului
+### 1. Ierarhii de Clase
+Au fost definite mai multe ierarhii și clase principale:
+* **Ierarhia Entity**: Clasa de bază din care derivă `NPC` și `Character`.
+* **Clasa Abstractă Character**: Clasă de bază abstractă (conține metoda pur virtuală `attack`) pentru `Player`, `Enemy` și `Boss`.
+* **Ierarhia Item**: Clasa de bază pentru `Weapon`, `Consumable` și `KeyItem`.
+* **Clasa Person**: Utilizată pentru gestionarea intrărilor în Leaderboard.
+* **Ierarhia GameException**: Gestionarea erorilor proprii, derivată din `std::exception`.
 
-  - programul va fi scris în C++
-  - programul va avea un meniu interactiv (doar pentru ilustrarea funcționalității)
-  - programul nu are erori de compilare
-  - fară variabile globale
-  - datele membre private(sau protected)
-  - GitHub Actions trecute
-  - commit-uri pe Git adecvate si punctuale
-  - folosirea a funcționalităților limbajului fără sens
-  - folosirea a funcționlităților limbajului cu scopul de a încălca "legal" o altă regulă
-      - folosirea excesivă a claselor friend
-      - folosirea excesviă a elementelor statice
-  - lipsa separarea implementarii de definitie
+### 2. Clase Template
+* **Room<T>**: O clasă template generică ce permite instanțierea camerelor cu conținut variat (ex: `Room<Enemy*>`, `Room<NPC*>`, `Room<Consumable*>`). Aceasta demonstrează specializarea comportamentului metodei `visit()` în funcție de tipul entității din cameră.
+* **Inventory<T>**: Clasa template responsabilă de stocarea și manipularea colecției de obiecte a jucătorului.
 
-## Cerințe
-- [ ] definirea a minim **2-3 ieararhii de clase** care sa interactioneze in cadrul temei alese (fie prin compunere, agregare sau doar sa apeleze metodele celeilalte intr-un mod logic) (6p)
-  - minim o clasa cu:
-    - [ ] constructori de inițializare [*](https://github.com/Ionnier/poo/tree/main/labs/L02#crearea-obiectelor)
-    - [ ] constructor supraîncărcat [*](https://github.com/Ionnier/poo/tree/main/labs/L02#supra%C3%AEnc%C4%83rcarea-func%C8%9Biilor)
-    - [ ] constructori de copiere [*](https://github.com/Ionnier/poo/tree/main/labs/L02#crearea-obiectelor)
-    - [ ] `operator=` de copiere [*](https://github.com/Ionnier/poo/tree/main/labs/L02#supra%C3%AEnc%C4%83rcarea-operatorilor)
-    - [ ] destructor [*](https://github.com/Ionnier/poo/tree/main/labs/L02#crearea-obiectelor)
-    - [ ] `operator<<` pentru afișare (std::ostream) [*](https://github.com/Ionnier/poo/blob/main/labs/L02/fractie.cpp#L123)
-    - [ ] `operator>>` pentru citire (std::istream) [*](https://github.com/Ionnier/poo/blob/main/labs/L02/fractie.cpp#L128)
-    - [ ] alt operator supraîncărcat ca funcție membră [*](https://github.com/Ionnier/poo/blob/main/labs/L02/fractie.cpp#L32)
-    - [ ] alt operator supraîncărcat ca funcție non-membră [*](https://github.com/Ionnier/poo/blob/main/labs/L02/fractie.cpp#L39) - nu neaparat ca friend
-  - in derivate
-      - [ ] implementarea funcționalităților alese prin [upcast](https://github.com/Ionnier/poo/tree/main/labs/L04#solu%C8%9Bie-func%C8%9Bii-virtuale-late-binding) și [downcast](https://github.com/Ionnier/poo/tree/main/labs/L04#smarter-downcast-dynamic-cast)
-        - aceasta va fi făcută prin **2-3** metode specifice temei alese
-        - funcțiile pentru citire / afișare sau destructorul nu sunt incluse deși o să trebuiască să le implementați 
-      - [ ] apelarea constructorului din clasa de bază din [constructori din derivate](https://github.com/Ionnier/poo/tree/main/labs/L04#comportamentul-constructorului-la-derivare)
-      - [ ] suprascris [cc](https://github.com/Ionnier/poo/tree/main/labs/L04#comportamentul-constructorului-de-copiere-la-derivare)/op= pentru copieri/atribuiri corecte
-      - [ ] destructor [virtual](https://github.com/Ionnier/poo/tree/main/labs/L04#solu%C8%9Bie-func%C8%9Bii-virtuale-late-binding)
-  - pentru celelalte clase se va definii doar ce e nevoie
-  - minim o ierarhie mai dezvoltata (cu 2-3 clase dintr-o clasa de baza)
-  - ierarhie de clasa se considera si daca exista doar o clasa de bază însă care nu moștenește dintr-o clasă din altă ierarhie
-- [ ] cât mai multe `const` [(0.25p)](https://github.com/Ionnier/poo/tree/main/labs/L04#reminder-const-everywhere)
-- [ ] funcții și atribute `static` (în clase) [0.5p](https://github.com/Ionnier/poo/tree/main/labs/L04#static)
-  - [ ] 1+ atribute statice non-triviale 
-  - [ ] 1+ funcții statice non-triviale
-- [ ] excepții [0.5p](https://github.com/Ionnier/poo/tree/main/labs/L04#exception-handling)
-  - porniți de la `std::exception`
-  - ilustrați propagarea excepțiilor
-  - ilustrati upcasting-ul în blocurile catch
-  - minim folosit într-un loc în care tratarea erorilor în modurile clasice este mai dificilă
-- [ ] folosirea unei clase abstracte [(0.25p)](https://github.com/Ionnier/poo/tree/main/labs/L04#clase-abstracte)
- - [ ] clase template
-   - [ ] crearea unei clase template [(1p)](https://github.com/Ionnier/poo/tree/main/labs/L08)
-   - [ ] 2 instanțieri ale acestei clase (0.5p)
- - STL [(0.25p)](https://github.com/Ionnier/poo/tree/main/labs/L07#stl)
-   - [ ] utilizarea a două structuri (containere) diferite (vector, list sau orice alt container care e mai mult sau mai putin un array)
-   - [ ] utilizarea a unui algoritm cu funcție lambda (de exemplu, sort, transform)
- - Design Patterns [(0.75p)](https://github.com/Ionnier/poo/tree/main/labs/L08)
-   - [ ] utilizarea a două șabloane de proiectare
+### 3. Supraincarcarea Operatorilor si Functii Friend
+* **Operatorul <<:** A fost supraîncărcat pentru clasa `Person` pentru a permite afișarea directă la consolă.
+* **Functii friend:** Au fost utilizate pentru a permite operatorului de afișare accesul la datele private ale claselor.
+* **Operatorul += (Functie Membra):** Supraîncărcat în clasa `Character` pentru a implementa mecanica de **Heal**. Permite modificarea directă a obiectului curent (`*this += amount`), demonstrând utilizarea unui operator membru care alterează starea internă.
+* **Operatorul >> (Citire):** Supraîncărcat pentru clasa `Player` pentru a permite inițializarea datelor eroului direct de la tastatură (`std::cin >> player`), encapsulând logica de input.
 
-### Observații
 
-* Pot exista depunctări până la 2p pentru diferite aspecte precum:
-  - memory leak-uri
-  - nefolosirea destructorului virtual la nevoie
-  - abuzarea de diferite concepte (toate funcțiile declarate virtual)
-  - apelarea de funcții virtual în constructori
+### 4. Polimorfism, RTTI si Casting (Upcast & Downcast)
+* **Upcasting:** Utilizat extensiv pentru tratarea uniformă a obiectelor derivate.
+    * **Exemplu NPC:** NPC-urile dețin un pointer generic la clasa de bază `Item*` pentru cadouri. Acest pointer poate face referire la obiecte de tip `Weapon`, `Consumable` sau `KeyItem` fără a cunoaște tipul exact la compilare.
+    * **Exemplu Inventar:** Containerul stochează pointeri `Item*`, permițând salvarea oricărui tip de obiect colectabil.
+* **Downcasting si RTTI:** Utilizarea **dynamic_cast** pentru a recupera tipul specific al obiectelor la runtime.
+    * În clasa `Player`: Se verifică dacă un `Item*` este `Consumable*` (pentru a fi folosit) sau `Weapon*` (pentru a fi echipat), asigurând Type Safety.
+* **Functii Virtuale:** Metodele `attack`, `use` și `visit` sunt definite virtual pentru a asigura legarea dinamică (Late Binding).
 
-* În general, acestea sunt prezente în [CppCoreGuideline](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md), dar nu e nevoie să parcurgeți documentul, doar să scrieți codul suficient de organizat
+### 5. Design Patterns
+* **Trigger / Observer Mechanism:** Implementat pentru mecanica de **Bonfire**. Clasa `Room` acționează ca un declanșator care notifică clasa principală `Map` atunci când jucătorul se odihnește. Acest lucru permite decuplarea logicii camerei de logica globală a hărții.
 
-* folderele `build/` și `install_dir/` sunt adăugate în fișierul `.gitignore` deoarece
-conțin fișiere generate și nu ne ajută să le versionăm.
+### 6. STL (Standard Template Library)
+* **std::vector**: Utilizat pentru stocarea inventarului, a listei de vecini și a listei câștigătorilor (`winBoard`).
+* **std::list**: Utilizat pentru lista jucătorilor învinși (`loseBoard`) în Leaderboard, demonstrând utilizarea a două containere diferite.
+* **Algoritmi si Lambda:** Utilizarea `std::sort` (pentru vector) și `list::sort` (pentru listă) împreună cu **funcții lambda** pentru sortarea clasamentului.
+
+### 7. Gestiunea Resurselor si Exceptii
+* Alocare dinamică a memoriei și implementarea destructorilor virtuali pentru evitarea memory leak-urilor.
+* Utilizarea blocurilor **try-catch** pentru validarea input-ului utilizatorului și a acțiunilor critice.
+
+### 8. Membri Statici
+* Utilizarea membrilor statici pentru contorizarea instanțelor de boși activi în joc.
+
+### 9. Const Correctness
+* Utilizarea intensivă a cuvântului cheie **const** pentru metodele de tip getter (ex: `getName`, `getHp`, `getScore`, `isAlive`) și pentru parametrii transmiși prin referință, garantând integritatea datelor și protejând starea obiectelor împotriva modificărilor accidentale.
+---
+
+
+Proiectul este configurat folosind CMake.

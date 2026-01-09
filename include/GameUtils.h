@@ -1,0 +1,104 @@
+
+//
+// Created by Vlad on 01.01.2026.
+//
+
+#ifndef PROIECT_OOP_GAMEUTILS_H
+#define PROIECT_OOP_GAMEUTILS_H
+
+
+#include <vector>
+#include <string>
+#include <exception>
+#include <iostream>
+
+
+//exceptiile
+class GameException : public std::exception {
+protected:
+    std::string msg;
+public:
+    explicit GameException(const std::string& msg) : msg(msg) {}
+    GameException():msg("Eroare"){}
+    virtual const char *what() const noexcept override { return msg.c_str(); }
+};
+
+class InvalidItemException : public GameException {
+public:
+    InvalidItemException() : GameException("Eroare:Item invalid") {
+    }
+};
+
+class InvalidChoice: public GameException {
+public:
+    InvalidChoice(): GameException("Nu poti folosi acest obiect in lupta") {
+    }
+};
+
+class BadInputException:public GameException {
+public:
+    BadInputException():GameException("Alege o varianta buna"){}
+};
+
+
+//clasa template inventar
+template <class T>
+class Inventory {
+private:
+    std::vector<T> items;
+    std::vector<int>counts;
+public:
+    Inventory() = default;
+
+    Inventory(const Inventory&) = delete;
+    Inventory& operator=(const Inventory&) = delete;
+
+    void add(const T& item) {
+        // FIX: size_t pentru comparatia cu size()
+        for (size_t i = 0; i < items.size(); ++i) {
+            if (items[i]->getName() == item->getName()) {
+                counts[i]++;
+                delete item;
+                return;
+            }
+        }
+        items.push_back(item);
+        counts.push_back(1);
+
+    }
+
+
+    void remove(size_t index) {
+        if (index < items.size()) {
+            delete items[index];
+            items.erase(items.begin()+index);
+            counts.erase(counts.begin()+index);
+        }
+    }
+    
+    
+    T& get(size_t index) {
+        if (index >= items.size()){throw InvalidItemException();}
+        return items[index];
+    }
+
+ 
+    int getCount(size_t index) {
+        if (index >= items.size()){throw InvalidItemException();}
+        return counts[index];
+    }
+
+  
+    void decreaseCount(size_t index) {
+        if (index >= items.size()){throw InvalidItemException();}
+        counts[index]--;
+        if (counts[index]==0)
+            remove(index);
+    }
+    
+    
+    int size() const {return static_cast<int>(items.size());}
+    bool empty() const {return items.empty();}
+};
+
+#endif //PROIECT_OOP_GAMEUTILS_H
